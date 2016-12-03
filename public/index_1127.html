@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="productCustomizer">
+<head>
+    <title> Data Science </title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.0/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.0/angular-route.js"></script>
+
+</head>
+<body ng-controller="MainController" style="padding: 20px;">
+<h1>Finland's Building Energy Consumption Analysis</h1>
+<h3> Choose the model you want to use for your Prediction and fill the required fields for the Output. </h3>
+<br/><br/>
+<script src="app.js"></script>
+<script src="config.js"></script>
+<script src="main.controller.js"></script>
+<div class="col-sm-6">
+    <ul class="nav nav-pills nav-justified">
+        <li class="btn" ng-click="method = 'prediction'" ng-class="{'btn-primary': method == 'prediction'}">Prediction</li>
+        <li class="btn" ng-click="method = 'classification'" ng-class="{'btn-primary': method == 'classification'}">Classification</li>
+        <li class="btn" ng-click="method = 'clustering'" ng-class="{'btn-primary': method == 'clustering'}">Clustering</li>
+    </ul>
+    <form class="form-horizontal" style="padding-top: 5px;">
+        <div class="form-group">
+            <label for="type" class="col-sm-4 control-label">Type</label>
+            <div class="col-sm-8" id="type">
+                <!--<input class="form-control" id="type" type="text" ng-model="type"> -->
+                <select ng-model="type" class="form-control">
+                  <option ng-value="elect">Electricity</option>
+                  <option ng-value="Dist_Heating">Heating</option>                  
+                </select>
+            </div>
+        </div>
+        <div class="form-group" ng-show="1==0">
+            <label for="hours" class="col-sm-4 control-label">Hours </label>
+            <div class="col-sm-8">
+                <input class="form-control" id="hours" type="text" ng-model="hours">
+            </div>
+        </div>
+        <div class="form-group" ng-show="1==0">
+            <label for="consumption" class="col-sm-4 control-label">Consumption </label>
+            <div class="col-sm-8">
+                <input class="form-control" id="consumption" type="text" ng-model="consumption">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="weekday" class="col-sm-4 control-label">Weekday </label>
+            <div class="col-sm-8">
+                <input class="form-control" id="weekday" type="text" ng-model="weekday">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Base_Hour_Flag" class="col-sm-4 control-label">Base Hour Flag </label>
+            <div class="col-sm-8">
+                <input class="form-control" id="Base_Hour_Flag" type="text" ng-model="Base_Hour_Flag">
+            </div>
+        </div>
+        <div class="form-group" ng-show="1==0">
+            <label for="Holiday" class="col-sm-4 control-label">Holiday </label>
+            <div class="col-sm-8">
+                <input class="form-control" id="Holiday" type="text" ng-model="Holiday">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="TemperatureF" class="col-sm-4 control-label">Temperature (F) </label>
+            <div class="col-sm-8">
+                <input class="form-control" id="TemperatureF" type="text" ng-model="TemperatureF">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Dew_PointF" class="col-sm-4 control-label">Dew Point (F) </label>
+            <div class="col-sm-8">
+                <input class="form-control" id="Dew_PointF" type="text" ng-model="Dew_PointF">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Humidity" class="col-sm-4 control-label">Humidity </label>
+            <div class="col-sm-8">
+                <input class="form-control" id="Humidity" type="text" ng-model="Humidity">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Sea_Level_PressureIn" class="col-sm-4 control-label">Sea Level Pressure </label>
+            <div class="col-sm-8">
+                <input class="form-control" id="Sea_Level_PressureIn" type="text"  ng-model="Sea_Level_PressureIn">
+                
+            </div>
+        </div>
+   <!--      <div class="form-group">
+            <label for="Wind_SpeedMPH" class="col-sm-4 control-label">Wind Speed (MPH) </label>
+            <div class="col-sm-8">
+                <input class="form-control" id="Wind_SpeedMPH" type="range" min="0.0" max="15.90" step="0.1" onchange="showValue(this.value)"  ng-model="Wind_SpeedMPH">
+                <span id="Wind_SpeedMPH">0</span>
+            </div>
+        </div> -->
+         <div class="form-group">
+            <label for="Wind_SpeedMPH" class="col-sm-4 control-label">Wind Speed (MPH) </label>
+            <div class="col-sm-8">
+                <input class="form-control" id="Wind_SpeedMPH" type="text" ng-model="Wind_SpeedMPH">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="WindDirDegrees" class="col-sm-4 control-label">Wind Direction (Degrees)</label>
+            <div class="col-sm-8">
+                <input class="form-control" id="WindDirDegrees" type="text" ng-model="WindDirDegrees">
+            </div>
+        </div>
+        <div class="form-group" >
+            <label for="base_hr_usage" class="col-sm-4 control-label">Base Hour Usage (KwH/Sqm) </label>
+            <div class="col-sm-8">
+                <input class="form-control" id="base_hr_usage" type="text" ng-model="base_hr_usage">
+            </div>
+        </div>
+        <div class="form-group" ng-show="1==0">
+            <label for="Base_Hour_Class" class="col-sm-4 control-label">Base Hour Class (High/Low) </label>
+            <div class="col-sm-8">
+                <input class="form-control" id="Base_Hour_Class" type="text" ng-model="Base_Hour_Class">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="area_floor" class="col-sm-4 control-label">Area Floor (Sq.m.)</label>
+            <div class="col-sm-8">
+                <input class="form-control" id="area_floor" type="text" ng-model="area_floor">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2">
+                <button type="submit" class="btn btn-primary" ng-click="predict()">Predict</button>
+            </div>
+        </div>
+    </form>
+    <div ng-show="method == 'A'">
+    </div>
+    <div ng-show="method == 'B'">
+
+    </div>
+    <div ng-show="method == 'C'">
+        <rzslider rz-slider-model="slider.value"
+                  rz-slider-options="slider.options"></rzslider>
+    </div>
+</div>
+<div class="col-sm-5 col-sm-offset-1">
+    <h2>Prediction Output</h2>
+    <table class="table table-hover">
+        <tr>
+            <th>Method</th>
+            <th>Consumption(KwH/Sqm)</th>
+            <th>Consumption(KwH)</th>
+        </tr>
+        <tr ng-repeat="result in results">
+            <td> {{result.type}}</td>
+            <td> {{result.persqm}}</td>
+            <td> {{result.total}}</td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+function showValue(newValue)
+{
+    document.getElementById("Wind_SpeedMPH").innerHTML=newValue;
+}
+</script>
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://rawgit.com/rzajac/angularjs-slider/master/dist/rzslider.js"></script>
+<link src="https://rawgit.com/rzajac/angularjs-slider/master/dist/rzslider.css">
+
+</body>
+</html>
