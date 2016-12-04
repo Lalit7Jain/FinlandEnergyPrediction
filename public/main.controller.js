@@ -53,7 +53,7 @@
                             });
                         }
                         $scope.results = output;
-                        
+                    
                 });                      
             } else if($scope.method == 'classification'){
                 var d = {
@@ -62,18 +62,18 @@
                             "ColumnNames": [
                                 "Date",
                                 "Hours",
-                                "consumption.Kwh.sqm",
                                 "Weekday",
                                 "Base_Hour_Flag",
-                                "TemperatureF"
+                                "TemperatureF",
+                                "area_floor._m.sqr"
                               ],
                             "Values": [
                                 [   $scope.date,
                                     $scope.hours,
-                                    $scope.consumption_kwh_sqm,
                                     $scope.weekday,
                                     $scope.Base_Hour_Flag,
-                                    $scope.TemperatureF
+                                    $scope.TemperatureF,
+                                    $scope.area_floor
                                 ]
                             ]
                         }
