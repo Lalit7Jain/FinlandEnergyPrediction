@@ -1,18 +1,37 @@
 {
-  "name": "web-dev",
+  "name": "OpenShift-Sample-App",
   "version": "1.0.0",
-  "description": "Web Dev at Northeastern University",
-  "main": "server.js",
+  "description": "Data Science at Northeastern University",
+  "keywords": [
+    "OpenShift",
+    "Node.js",
+    "application",
+    "openshift"
+  ],
+  "author": {
+    "name": "Lalit Jain",
+    "email": "ramr@example.org",
+    "url": "http://www.openshift.com/"
+  },
+  "homepage": "http://www.openshift.com/",
+  
+  "engines": {
+    "node": ">= 0.6.0",
+    "npm": ">= 1.0.0"
+  },
   "dependencies": {
-    "body-parser": "^1.15.1",
-    "express": "^4.13.4",
-    "mongoose": "^4.4.15"
+    "angular-ui-bootstrap": "^1.3.2",   
+    "body-parser": "^1.15.0",
+    "cookie-parser": "^1.4.1",
+    "express": "^3.21.2",
+    "express-session": "^1.13.0"
+   
+  },
+  "scripts": {
+     "start": "node server.js"
   },
   "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "author": "Jose G. Annunziato",
-  "license": "ISC"
+  "bundleDependencies": [],
+  "private": true,
+  "main": "server.js"
 }

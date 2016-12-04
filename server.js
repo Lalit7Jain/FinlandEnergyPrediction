@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var http = require("http");
-
+//var session = require("express-session")
 var https = require("https");
 
 var querystring = require("querystring");
@@ -16,10 +16,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
 
-var ipaddress = process.env.OPENSHIFT_NODEJS_IP;
-var port      = process.env.OPENSHIFT_NODEJS_IPORT || 3000;
+//Web Deployment
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+app.listen(server_port, server_ip_address);
 
-app.listen(port, ipaddress);
+//var ipaddress = process.env.OPENSHIFT_NODEJS_IP;
+//var port      = process.env.OPENSHIFT_NODEJS_IPORT || 3000;
+//app.listen(port, ipaddress);
+
 // app.post("/prediction/neural-network", neuralNetwork);
 // app.post("/prediction/linear-regression", linearRegression);
 // app.post("/prediction/random-regression",randomForestRegression);
