@@ -1,33 +1,49 @@
-var express = require('express');
-var app = express();
-var http = require("http");
-//var session = require("express-session")
-var https = require("https");
+//  OpenShift sample Node application
+var express = require('express'),
+    fs      = require('fs'),
+    app     = express(),
+    eps     = require('ejs'),
+    http = require("http"),
+    https = require("https"),
+    bodyParser = require('body-parser'),
+    morgan  = require('morgan');
+    
+Object.assign=require('object-assign')
 
-var querystring = require("querystring");
-
-var fs = require('fs');
-
-var bodyParser = require('body-parser');
+app.engine('html', require('ejs').renderFile);
+app.use(morgan('combined'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// configure a public directory to host static content
+var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
+    ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0',
+    mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
+    mongoURLLabel = "";
+
+if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
+  var mongoServiceName = process.env.DATABASE_SERVICE_NAME.toUpperCase(),
+      mongoHost = process.env[mongoServiceName + '_SERVICE_HOST'],
+      mongoPort = process.env[mongoServiceName + '_SERVICE_PORT'],
+      mongoDatabase = process.env[mongoServiceName + '_DATABASE'],
+      mongoPassword = process.env[mongoServiceName + '_PASSWORD']
+      mongoUser = process.env[mongoServiceName + '_USER'];
+
+  if (mongoHost && mongoPort && mongoDatabase) {
+    mongoURLLabel = mongoURL = 'mongodb://';
+    if (mongoUser && mongoPassword) {
+      mongoURL += mongoUser + ':' + mongoPassword + '@';
+    }
+    // Provide UI label that excludes user id and pw
+    mongoURLLabel += mongoHost + ':' + mongoPort + '/' + mongoDatabase;
+    mongoURL += mongoHost + ':' +  mongoPort + '/' + mongoDatabase;
+
+  }
+}
+
+// My part
+
 app.use(express.static(__dirname + '/public'));
 
-
-//Web Deployment
-var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
-app.listen(server_port, server_ip_address);
-
-//var ipaddress = process.env.OPENSHIFT_NODEJS_IP;
-//var port      = process.env.OPENSHIFT_NODEJS_IPORT || 3000;
-//app.listen(port, ipaddress);
-
-// app.post("/prediction/neural-network", neuralNetwork);
-// app.post("/prediction/linear-regression", linearRegression);
-// app.post("/prediction/random-regression",randomForestRegression);
 app.post("/prediction/regression",regression);
 app.post("/classification",classification);
 app.post("/clustering",clustering);
@@ -65,37 +81,6 @@ function clustering(req, res){
         res.json(result);
     }, 1000);
 }
-
-function neuralNetwork(req, res){
-    var data = req.body;
-    var path = '/workspaces/0e6e3268518847ab90cb1087c291e541/services/9983168ed5e9423e9793d33f7b4dad67/execute?api-version=2.0&details=true';
-    var key = 'QuZ0cj80JjZQkxNwXLN225jQY2V3SQ1ZRSfuU7NfjHxnoyQvKLqYtprJ4e1rSiLYAc3UfC0ObP50xkAnDC0haw==';
-    getPred(data, path, key);
-    setTimeout(function() {
-        res.json(result);
-    }, 1000);
-}
-
-function linearRegression(req, res){
-    var data = req.body;
-    var path = '/workspaces/0e6e3268518847ab90cb1087c291e541/services/00677f69dcb04fd4b6b32935e8d682d5/execute?api-version=2.0&details=true';
-    var key = 'Ml+nsBT3bYQhRhJGVMFc5a4IHr2/5hL8OXsnvkiyM9FGz8RVS5BpSQ0rmZ6aMCHEL8RLvZKjhZNDq8kPSqcTHQ==';
-    getPred(data, path, key);
-    setTimeout(function() {
-        res.json(result);
-    }, 1000);
-}
-
-function randomForestRegression(req, res){
-    var data = req.body;
-    var path = '/workspaces/0e6e3268518847ab90cb1087c291e541/services/5bcf5235b7154b6fa6c46e020ed462cf/execute?api-version=2.0&details=true';
-    var key = 'ebHOWYvKOBhB2QXyC2SCsZRy05YBwfWyNFIk1qkf39ppDw9+ET5CVeE8mXP1KoJBBBJzJ8tXrNFnA4wbBqbwDw==';
-    getPred(data, path, key);
-    setTimeout(function() {
-        res.json(result);
-    }, 1000);
-}
-
 
 function getPred(data, path, api_key) {
 
@@ -148,5 +133,79 @@ function onRequest(request, response) {
     }
 }
 
-http.createServer(onRequest).listen(8050);
-//buildFeatureInput();
+// End of my part
+
+
+
+
+var db = null,
+    dbDetails = new Object();
+
+var initDb = function(callback) {
+  if (mongoURL == null) return;
+
+  var mongodb = require('mongodb');
+  if (mongodb == null) return;
+
+  mongodb.connect(mongoURL, function(err, conn) {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    db = conn;
+    dbDetails.databaseName = db.databaseName;
+    dbDetails.url = mongoURLLabel;
+    dbDetails.type = 'MongoDB';
+
+    console.log('Connected to MongoDB at: %s', mongoURL);
+  });
+};
+
+app.get('/', function (req, res) {
+  // try to initialize the db on every request if it's not already
+  // initialized.
+  if (!db) {
+    initDb(function(err){});
+  }
+  if (db) {
+    var col = db.collection('counts');
+    // Create a document with request IP and current time of request
+    col.insert({ip: req.ip, date: Date.now()});
+    col.count(function(err, count){
+      res.render('index.html', { pageCountMessage : count, dbInfo: dbDetails });
+    });
+  } else {
+    res.render('index.html', { pageCountMessage : null});
+  }
+});
+
+app.get('/pagecount', function (req, res) {
+  // try to initialize the db on every request if it's not already
+  // initialized.
+  if (!db) {
+    initDb(function(err){});
+  }
+  if (db) {
+    db.collection('counts').count(function(err, count ){
+      res.send('{ pageCount: ' + count + '}');
+    });
+  } else {
+    res.send('{ pageCount: -1 }');
+  }
+});
+
+// error handling
+app.use(function(err, req, res, next){
+  console.error(err.stack);
+  res.status(500).send('Something bad happened!');
+});
+
+initDb(function(err){
+  console.log('Error connecting to Mongo. Message:\n'+err);
+});
+
+app.listen(port, ip);
+console.log('Server running on http://%s:%s', ip, port);
+
+module.exports = app ;
