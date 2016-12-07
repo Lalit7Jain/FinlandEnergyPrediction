@@ -2,57 +2,19 @@
 <html lang="en" ng-app="productCustomizer">
 <head>
     <title> Data Science </title>
-	<meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.0/angular.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.0/angular-route.js"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script>
-function ButtonClick()
-{
-document.getElementById("date").value= '01/01/2016';
-document.getElementById("hours").value= '1';
-document.getElementById("TemperatureF").value= '35.6';
-document.getElementById("Dew_PointF").value= '33.8';
-document.getElementById("base_hr_usage").value= '0.22954';
-document.getElementById("area_floor").value= '110'
-document.getElementById("Base_Hour_Flag").value= '1';
-document.getElementById("Humidity").value= '90';
-document.getElementById("weekday").value= '1';
-document.getElementById("Wind_SpeedMPH").value= '13.8';
-document.getElementById("WindDirDegrees").value= '160';
-document.getElementById("consumption_kwh_sqm").value= '0.22726';
-}
-</script>
 
 </head>
-<body ng-controller="MainController">
+<body ng-controller="MainController" style="padding: 20px;">
 <style>
     .high{
         background-color: lightgreen;
     }
-	
-h1 {
-    font-size: 25%;
-}
 </style>
-<div class="jumbotron alert alert-info" role="alert" "style:font-size:1px">
-<div class="container">
-<h2 align =center><b><u>Finland's Building Energy Consumption Prediction</u></b></h2>
-<br>
-<br>
-<h4>Choose the model you want to use for your Prediction and fill the required fields for the Output.</h4>
-<b> Site is built using Angular.js and hosted on Red Hat open shift platform. 
-Refer to the following links for Report and GitHub Location</b> 
+<h1>Finland's Building Energy Consumption Analysis</h1>
+<h3> Choose the model you want to use for your Prediction and fill the required fields for the Output. </h3>
 <br/><br/>
-<a href="https://github.com/sameer-goel/Assignment3_Team7/blob/master/Assignement3_Team7_Report.pdf">
-<input type="button" class="alert alert-danger" value="Report"/></a>&nbsp;&nbsp;
-<a href="https://github.com/sameer-goel/Assignment3_Team7"><input type="button" class="alert alert-danger" value="GitHub"/></a>
-
-</div>
-</div>
 <script src="app.js"></script>
 <script src="config.js"></script>
 <script src="main.controller.js"></script>
@@ -83,55 +45,55 @@ Refer to the following links for Report and GitHub Location</b>
         <div class="form-group">
             <label for="hours" class="col-sm-4 control-label"> Hours </label>
             <div class="col-sm-8">
-                <input class="form-control" id="hours" type="number" min="0" max="23" ng-model="hours">
+                <input class="form-control" id="hours" type="number" ng-model="hours">
             </div>
         </div>
         <div class="form-group" ng-show="method == 'classification'">
             <label for="weekday" class="col-sm-4 control-label">Weekday </label>
             <div class="col-sm-8">
-                <input class="form-control" id="weekday" type="number" min="0" max="1" ng-model="weekday">
+                <input class="form-control" id="weekday" type="text" ng-model="weekday">
             </div>
         </div>
         <div class="form-group" ng-show="1==0">
             <label for="consumption" class="col-sm-4 control-label">Consumption </label>
             <div class="col-sm-8">
-                <input class="form-control" id="consumption" type="number" ng-model="consumption">
+                <input class="form-control" id="consumption" type="text" ng-model="consumption">
             </div>
         </div>
-         <div class="form-group" ng-show="method == 'clustering'">
+         <div class="form-group" ng-show="method == 'classification' || method == 'clustering'">
             <label for="consumption_kwh_sqm" class="col-sm-4 control-label">Consumption (KwH/SqM) </label>
             <div class="col-sm-8">
-                <input class="form-control" id="consumption_kwh_sqm" type="number" min="0.0" max="0.6" step="0.00001" ng-model="consumption_kwh_sqm">
+                <input class="form-control" id="consumption_kwh_sqm" type="text" ng-model="consumption_kwh_sqm">
             </div> 
         </div>
         <div class="form-group" ng-show="method == 'classification'">
             <label for="Base_Hour_Flag" class="col-sm-4 control-label">Base Hour Flag </label>
             <div class="col-sm-8">
-                <input class="form-control" id="Base_Hour_Flag" type="number" min="0" max="1" ng-model="Base_Hour_Flag">
+                <input class="form-control" id="Base_Hour_Flag" type="text" ng-model="Base_Hour_Flag">
             </div>
         </div>
         <div class="form-group" ng-show="1==0">
             <label for="Holiday" class="col-sm-4 control-label">Holiday </label>
             <div class="col-sm-8">
-                <input class="form-control" id="Holiday" type="number" ng-model="Holiday">
+                <input class="form-control" id="Holiday" type="text" ng-model="Holiday">
             </div>
         </div>
         <div class="form-group">
             <label for="TemperatureF" class="col-sm-4 control-label">Temperature (F) </label>
             <div class="col-sm-8">
-                <input class="form-control" id="TemperatureF" type="number" min="-21.00" max="86.00" step="0.0001" ng-model="TemperatureF"> 
+                <input class="form-control" id="TemperatureF" type="text" ng-model="TemperatureF">
             </div>
         </div>
         <div class="form-group" ng-show="method == 'prediction' || method == 'clustering'">
             <label for="Dew_PointF" class="col-sm-4 control-label">Dew Point (F) </label>
             <div class="col-sm-8">
-                <input class="form-control" id="Dew_PointF" type="number" min="-21.00" max="86.00" step="0.0001" ng-model="Dew_PointF">
+                <input class="form-control" id="Dew_PointF" type="text" ng-model="Dew_PointF">
             </div>
         </div>
         <div class="form-group" ng-show= "method == 'clustering'">
             <label for="Humidity" class="col-sm-4 control-label">Humidity </label>
             <div class="col-sm-8">
-                <input class="form-control" id="Humidity" type="number" min="13" max="100" ng-model="Humidity">
+                <input class="form-control" id="Humidity" type="text" ng-model="Humidity">
             </div>
         </div>
         <div class="form-group" ng-show="1==0">
@@ -145,51 +107,38 @@ Refer to the following links for Report and GitHub Location</b>
          <div class="form-group" ng-show= "method == 'clustering'">
             <label for="Wind_SpeedMPH" class="col-sm-4 control-label">Wind Speed (MPH) </label>
             <div class="col-sm-8">
-                <input class="form-control" id="Wind_SpeedMPH" type="number" min="0" max="33" step="0.01" ng-model="Wind_SpeedMPH">
+                <input class="form-control" id="Wind_SpeedMPH" type="text" ng-model="Wind_SpeedMPH">
             </div>
         </div>
         <div class="form-group" ng-show= "method == 'clustering'">
             <label for="WindDirDegrees" class="col-sm-4 control-label">Wind Direction (Degrees)</label>
             <div class="col-sm-8">
-                <input class="form-control" id="WindDirDegrees" type="number" min="0" max="360" ng-model="WindDirDegrees">
+                <input class="form-control" id="WindDirDegrees" type="text" ng-model="WindDirDegrees">
             </div>
         </div>
         <div class="form-group" ng-show="method == 'prediction' || method == 'clustering'">
             <label for="base_hr_usage" class="col-sm-4 control-label">Base Hour Usage (KwH/Sqm) </label>
             <div class="col-sm-8">
-                <input class="form-control" id="base_hr_usage" type="number" min="0" max="0.5" step="0.00001" ng-model="base_hr_usage">
+                <input class="form-control" id="base_hr_usage" type="text" ng-model="base_hr_usage">
             </div>
         </div>
         <div class="form-group" ng-show="1==0">
             <label for="Base_Hour_Class" class="col-sm-4 control-label">Base Hour Class (High/Low) </label>
             <div class="col-sm-8">
-                <input class="form-control" id="Base_Hour_Class" type="number" ng-model="Base_Hour_Class">
+                <input class="form-control" id="Base_Hour_Class" type="text" ng-model="Base_Hour_Class">
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" ng-show="method == 'prediction' || method == 'clustering'">
             <label for="area_floor" class="col-sm-4 control-label">Area Floor (Sq.m.)</label>
             <div class="col-sm-8">
-                <input class="form-control" id="area_floor" type="number" min="110" max="41339" ng-model="area_floor">
+                <input class="form-control" id="area_floor" type="text" ng-model="area_floor">
             </div>
         </div>
         <div class="form-group">
-            <div class="col-sm-offset-4">
-				<button type="button" class="btn btn-primary" value="Click Here" name="no" onclick="ButtonClick()"> Insert Sample Data </button>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button   type="submit" class="btn btn-primary" ng-click="predict()">Predict</button>
+            <div class="col-sm-offset-2">
+                <button type="submit" class="btn btn-primary" ng-click="predict()">Predict</button>
             </div>
         </div>
-        <!--<div class="form-group">
-            <div class="col-sm-offset-2">
-                Sample Value: </br>
-                {
-                    Date: 01/01/2016, Hours: 1 , Temperatur: 35.6, Dew-Point: 33.8,</br>
-                    Base Hour Usage: 0.22954, Area Floor: 110 ,Base Hour Flag : 1, </br>
-                    Weekday: 1, Humidity: 90, Wind Speed: 13.8, Wind Direction: 160,</br> Consumption (kwh/sqm):0.227267
-                }
-				
-            </div>
-        </div> -->
     </form>
     <div ng-show="method == 'A'">
     </div>
@@ -203,8 +152,7 @@ Refer to the following links for Report and GitHub Location</b>
 </div>
 <div class="col-sm-5 col-sm-offset-1">
     <div ng-show="method == 'prediction'">
-        <h2 class="alert alert-success" role="alert">Regression Output</h2>
-        <h5 style="color: red"> Please wait 5-10 seconds for the output</h5>
+        <h2>Regression Output</h2>
         <table class="table table-hover">
             <tr>
                 <th>Method</th>
@@ -219,8 +167,7 @@ Refer to the following links for Report and GitHub Location</b>
         </table>
     </div>
     <div ng-show="method == 'classification'">
-        <h2 class="alert alert-success" role="alert">Classification Output</h2>
-        <h5 style="color: Green"> Results with green background, can be considered a good prediction</h5>
+        <h2>Classification Output</h2>
         <table class="table table-hover">
             <tr>
                 <th>Name</th>
@@ -235,7 +182,7 @@ Refer to the following links for Report and GitHub Location</b>
         </table>
     </div>
        <div ng-show="method == 'clustering'">
-        <h2 class="alert alert-success" role="alert">Clustering Output</h2>
+        <h2>Clustering Output</h2>
         <table class="table table-hover">
             <tr>
                 <th>Method</th>
